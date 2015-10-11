@@ -79,11 +79,19 @@ exports.login = utils.toPromise(function (username, password, opts, callback) {
   } else if (!password) {
     return callback(new AuthError('you must provide a password'));
   }
-
+  var usernamePassword= "name="+username+"&password="+password;
   var ajaxOpts = utils.extend(true, {
+    "headers": {
+      /***
+      Authorization 可选
+      ***/
+      "Authorization": 'Basic ' + window.btoa(username+ ':' + password),  
+      "Content-Type":"application/x-www-form-urlencoded"
+
+    },
     method : 'POST',
     url : utils.getSessionUrl(db),
-    body : {name : username, password : password}
+    body : usernamePassword
   }, opts.ajax || {});
   utils.ajax(ajaxOpts, wrapError(callback));
 });
